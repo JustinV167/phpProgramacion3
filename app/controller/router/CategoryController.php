@@ -3,7 +3,7 @@
 class CategoryController{
     public function __construct(){
         if(!isset($_SESSION['signIn'])){
-            header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+            header('Location: http://'.$_SERVER['HTTP_HOST']);
         }
     }
     public function view_index(){

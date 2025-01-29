@@ -37,7 +37,7 @@ class registerController
         $_SESSION['signIn']=true;
         $_SESSION['exp']=new DateTime();
         $_SESSION['exp']->modify('+4 hours');
-        header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+        header('Location: http://'.$_SERVER['HTTP_HOST']);
     }
     public function validateData($data)
     {

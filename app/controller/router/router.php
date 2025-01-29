@@ -16,8 +16,8 @@ class Router{
         $url=explode('/',$parsedUrl['path']);
         $this->controller=$url[1];
         $this->method=count($url)<3?'index':(!count($url)?'not__found':$url[2]);
-        $this->controller=$url[1]==""?'HomeController':$this->controller.'Controller';
-            if(file_exists(__DIR__.'/'.$this->controller.'.php')){
+        $this->controller=ucfirst($url[1]==""?'HomeController':$this->controller.'Controller');
+        if(file_exists(__DIR__.'/'.$this->controller.'.php')){
             require_once  __DIR__.'/'.$this->controller.'.php';
         }else{
             require_once  __DIR__.'/HomeController.php';

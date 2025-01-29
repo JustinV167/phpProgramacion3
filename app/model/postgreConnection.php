@@ -14,7 +14,7 @@ class PostgreConnection
     }
     private function create_connection()
     {
-        $host = 'localhost';
+        $host = 'db';
         $username = 'postgres';
         $password = 'admin';
         try {

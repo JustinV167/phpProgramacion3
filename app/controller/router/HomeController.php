@@ -3,7 +3,7 @@
 class HomeController{
     public function view_login(){
         if(isset($_SESSION['signIn'])){
-            header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+            header('Location: http://'.$_SERVER['HTTP_HOST']);
         }
         include_once(__DIR__."/../data/loginController.php");
         $loginController=new LoginController();
@@ -11,7 +11,7 @@ class HomeController{
     }
     public function view_register(){
         if(isset($_SESSION['signIn'])){
-            header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+            header('Location: http://'.$_SERVER['HTTP_HOST']);
         }
         include_once(__DIR__."/../data/registerController.php");
         $registerController=new RegisterController();
@@ -28,7 +28,7 @@ class HomeController{
     }
     public function view_profile(){
         if(!isset($_SESSION['signIn'])){
-            header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+            header('Location: http://'.$_SERVER['HTTP_HOST']);
         }
         include_once(__DIR__."/../data/profileController.php");
         $profileController=new ProfileController();

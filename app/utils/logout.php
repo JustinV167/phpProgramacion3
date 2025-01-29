@@ -1,7 +1,7 @@
 <?php 
 function logout(){
     session_destroy();
-    header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.folderPath);
+    header('Location: http://'.$_SERVER['HTTP_HOST']);
 }
 function expireLogout(){
     if(isset($_SESSION['exp'])){
