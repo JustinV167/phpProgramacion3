@@ -17,8 +17,9 @@ class PostgreConnection
         $host = 'dpg-cucsdm1u0jms73cd4bb0-a';
         $username = 'php_login_user';
         $password = 'DmRzJUwUgP78zLkUPDiWVHhqnO1Puybn';
+        $port=5432
         try {
-            $connection = new PDO("pgsql:host=$host;", $username, $password);
+            $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
             $sqlExisteDB = "SELECT 1 FROM pg_database WHERE datname = :dbname";
             $sqlPrepare = $connection->prepare($sqlExisteDB);
             $sqlPrepare->execute([':dbname' => 'php_login']);
