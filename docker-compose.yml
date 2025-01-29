@@ -1,5 +1,7 @@
 version: '3'
 
+networks:
+  my-network:
 services:
 
   web:
@@ -12,6 +14,8 @@ services:
       - ./:/var/www/html
     depends_on:
       - db
+    networks:
+      - my-network
 
   db:
     build:  # Cambiamos esto para usar el Dockerfile personalizado
@@ -23,6 +27,8 @@ services:
       POSTGRES_PASSWORD: admin
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - my-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -33,6 +39,8 @@ services:
       - "5050:80"
     depends_on:
       - db
+    networks:
+      - my-network
 
 volumes:
   postgres-data:
