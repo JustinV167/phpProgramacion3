@@ -14,9 +14,9 @@ class PostgreConnection
     }
     private function create_connection()
     {
-        $host = 'db';
-        $username = 'postgres';
-        $password = 'admin';
+        $host = 'dpg-cucsdm1u0jms73cd4bb0-a';
+        $username = 'php_login_user';
+        $password = 'DmRzJUwUgP78zLkUPDiWVHhqnO1Puybn';
         try {
             $connection = new PDO("pgsql:host=$host;", $username, $password);
             $sqlExisteDB = "SELECT 1 FROM pg_database WHERE datname = :dbname";
