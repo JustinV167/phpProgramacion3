@@ -32,6 +32,8 @@ class LoginController{
             'email'=>$userData['email'],
             'status'=>$userData['status'],
             'rol'=>$userData['rol'],
+            'money'=>$userData['money'],
+
         ];
         $_SESSION['signIn']=true;
         $_SESSION['exp']=new DateTime();

@@ -81,7 +81,7 @@ $category=new CategoryDataController();
             <input type="checkbox" id="session__check" style="display:none;" checked />
             <div>
                 <ul>
-                    <li>Mi perfil</li>
+                    <a href="<?php echo Router::$__root ?>home/profile"><li>Mi perfil</li></a>
                     <li>
                         <form action="" method="post"><button name="logout" class="button__not__style" >Cerrar Sesion</button></form>
                     </li>
@@ -91,5 +91,14 @@ $category=new CategoryDataController();
 
     <?php endif ?>
     <div class="nav__bar__section section__hidden"></div>
+   
 </div>
 <div class="nav__bar__template"></div>
+<?php if (isset($_SESSION['signIn'])): ?>
+        <div class="fixed top-2 right-2 ">
+        <div class="nav__bar__template"></div>  
+        <div class="p-1 bg-white border border-blue-600 rounded-lg ">
+            Tu dinero: <?php echo $_SESSION['user']->money ?> bs
+        </div>  
+     </div>
+        <?php endif ?>

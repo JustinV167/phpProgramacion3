@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="<?php echo Router::$__public ?>css/styles.css">
-    <link rel="stylesheet" href="<?php echo Router::$__public ?>css/tailwind.css">
-</head>
-
-<body>
-    <?php
-    include_once(__DIR__ . "/../template/signInNavbar.php");
-    ?>
+<?php
+include_once(__DIR__."/../template/header.php");
+?>
     <div class="flex w-full my-4 text-3xl justify-center">
         <p class><?php echo $productsController->category['name'] ?> </p>
     </div>
     <form class="flex w-full my-4 px-10 ">
-        <input value="" name="searchCategory" type="text" placeholder="Buscar categoria"
+        <input value="<?php echo $productsController->searchProducts ?>" name="searchProduct" type="text" placeholder="Buscar producto"
             class="border rounded-lg border-gray-700 px-1">
         <button class="h-7 w-7 hover:bg-blue-500 flex justify-center items-center bg-blue-400 rounded-lg mx-1">
             <img src="<?php echo Router::$__public ?>icons/search.svg">
@@ -27,13 +15,13 @@
 
         <?php
         $data = $productsController->get_product_by_submit();
-        var_dump($data->data);
         if (count($data->data) == 0) {
-            echo 'no hay productos';
+            echo 'No se encontro ningun producto';
         } else {
 
             foreach ($data->data as $key => $value) { ?>
-                <div class=' w-52 flex flex-col border border-blue-400 rounded-xl cursor-pointer  '>
+                <form onsubmit="return handleSubmit(event);"
+                    class=' w-52 flex flex-col border border-blue-400 rounded-xl cursor-pointer  '>
                     <div class="bg-blue-200 rounded-t-xl py-2 pb-0 flex flex-col items-center ">
                         <img class='w-48 h-36 rounded-xl  border border-blue-400 rounded-xl'
                             src='<?php echo Router::$__public . $value['rute_img'] ?>'></img>
@@ -45,28 +33,69 @@
                             <p>precio:<?php echo $value['price'] ?>bs</p>
                         </div>
                         <div class="w-full flex justify-center gap-2">
-                            <button onclick="prevButtonNumber(this)"
+                            <button type="button" onclick="prevButtonNumber(this)"
                                 class="w-6 h-6 bg-blue-500 text-white font-semibold hover:scale-105 transform transition-all rounded-lg">
-                            <</button>
-                            <input class="border border-gray-700 rounded-lg w-16" type="number" min="0" oninput="maxValue(this)"
-                                max="<?php echo $value['amount'] ?>">
-                            <button onclick="nextButtonNumber(this)"
-                                class="w-6 h-6 bg-blue-500 text-white font-semibold hover:scale-105 transform transition-all rounded-lg">></button>
+                                <</button>
+                                    <input name="buy_amount" class="border border-gray-700 rounded-lg w-16" type="number"
+                                        min="0" oninput="maxValue(this)" max="<?php echo $value['amount'] ?>">
+                                    <button type="button" onclick="nextButtonNumber(this)"
+                                        class="w-6 h-6 bg-blue-500 text-white font-semibold hover:scale-105 transform transition-all rounded-lg">></button>
                         </div>
                         <div class="flex flex-wrap justify-between pt-1">
                             <p>total:<span class="total_price">0</span><span
                                     class="price hidden"><?php echo $value['price'] ?></span>
                             </p>
-                            <button class="bg-blue-500 rounded-lg h-6 px-1 hover:scale-105 transform transition-all">Comprar</button>
+                            <button name="buy_button" data-id="<?php echo $value['id'] ?>"
+                                data-price="<?php echo $value['price'] ?>"
+                                data-amount="<?php echo $value['amount'] ?>"
+                                class="bg-blue-500 rounded-lg h-6 px-1 hover:scale-105 transform transition-all">Comprar</button>
                         </div>
                     </div>
 
-                </div>
+                </form>
 
             <?php }
         } ?>
     </div>
     <script src="<?php echo Router::$__public ?>js/events.js"></script>
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+            const buy_amount = e.target.buy_amount.value
+            const buy_button=e.target.buy_button
+            const buy_id=buy_button.getAttribute('data-id')
+            const buy_price=buy_button.getAttribute('data-price')
+            const amount=buy_button.getAttribute('data-amount')
+            if (buy_amount == "" || parseInt(buy_amount) == 0) {
+                alert('No se ingreso ningun monto')
+                return
+            }
+            const dataUser = { 
+                amount,
+                money: <?php echo $_SESSION['user']->money ?>,
+                buy_amount:parseInt(buy_amount),buy_id,buy_price,buy:'true'
+                }
+            if(dataUser.money<(buy_price*buy_amount)){
+                alert('No posees el dinero suficiente')
+                return
+            }
+            const form = document.createElement('form');
+            form.action = '';
+            form.method = 'post';
+            form.style.display = 'none'; 
+            for (const key in dataUser) {
+                if (dataUser.hasOwnProperty(key)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = dataUser[key];
+                    form.appendChild(input);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit()
+        }
+    </script>
 </body>
 
 </html>

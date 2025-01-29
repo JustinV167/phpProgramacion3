@@ -174,7 +174,67 @@ class PostgreConnection
             return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', 'data' => []];
         }
     }
-    
+    public function modify_amount($id,$amount)
+    {
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->modifyAmount);
+            $sqlPrepare->execute([$amount,$id]);
+            $result = $sqlPrepare->fetchAll();
+            if (count($result) > 0) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', ];
+        }
+    }
+    public function modify_money($email,$amount)
+    {
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->modifyMoney);
+            $sqlPrepare->execute([$amount,$email]);
+            $result = $sqlPrepare->fetchAll();
+            if (count($result) > 0) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', ];
+        }
+    }
+    public function userMoney($email){
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->userMoney);
+            $sqlPrepare->execute([$email]);
+            $result = $sqlPrepare->fetchAll();
+            if (count($result) > 0) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito',  'data' => $result];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', 'data' => [] ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias',  'data' => []];
+        }
+    }public function productAmount($id){
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->productAmount);
+            $sqlPrepare->execute([$id]);
+            $result = $sqlPrepare->fetchAll();
+            if (count($result) > 0) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito',  'data' => $result];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', 'data' => [] ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias',  'data' => []];
+        }
+    }
     private function initializeTables()
     {
         $arrTables = ['usersTable', 'img_ruteTable', 'categorysTable', 'productsTable'];

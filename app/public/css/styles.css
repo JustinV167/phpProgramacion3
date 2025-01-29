@@ -261,11 +261,19 @@ p {
  padding: 4px 4px 4px 8px;
  text-align: start;
  }
- #session__check+div>ul>li:first-child{
+ #session__check+div>ul>a>li{
+  color: white;
+padding: 4px 4px 4px 8px;
+text-align: start;
+}
+ #session__check+div>ul>a>li:first-child{
   border: var(--blue-medio) solid;
   border-width:0px 0px 1px 0px ;
  }
  #session__check+div>ul>li:hover{
+  background-color: var(--blue-medio);
+ }
+ #session__check+div>ul>a>li:hover{
   background-color: var(--blue-medio);
  }
 /* media querys */

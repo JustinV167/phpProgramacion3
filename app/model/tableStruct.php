@@ -5,7 +5,11 @@ class SentencesStruct
    public $usersTable = 'CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY,email VARCHAR(40) UNIQUE, name VARCHAR(20), lastname VARCHAR(20),password VARCHAR(80),status VARCHAR(15),rol VARCHAR(15),money FLOAT DEFAULT 0 );';
    public $usersCreate = 'INSERT INTO users (name, lastname, email,password,status,rol) VALUES (?,?,?,?,?,?);';
    public $userQuery = "SELECT * FROM public.users WHERE email=? AND status='active'";
+   public $modifyMoney="UPDATE users SET money = money + ? WHERE email = ?;";
+   public $userMoney="SELECT money FROM users WHERE email=? AND status='active'";
+
    //img_rute
+   
    public $img_ruteTable = "CREATE TABLE IF NOT EXISTS img_rute (id SERIAL PRIMARY KEY,rute VARCHAR(40) UNIQUE, name VARCHAR(20));
    INSERT INTO img_rute (rute, name) VALUES ('img/imagen.jpg','miimagen') ON CONFLICT (rute) DO NOTHING;";
 
@@ -26,6 +30,9 @@ class SentencesStruct
    public $productsQuery = "SELECT *,
       (SELECT i.rute FROM public.img_rute as i WHERE p.id_img=i.id) as rute_img
       FROM public.products as p WHERE p.status!='inactive' AND p.id_category=? AND p.name ILIKE '%' || ? || '%';";
+   public $modifyAmount="UPDATE public.products SET amount = amount + ? WHERE id = ?;";
+   public $productAmount="SELECT amount FROM products WHERE id=? AND status='active'";
+
 }
 
 ?>
