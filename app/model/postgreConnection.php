@@ -7,17 +7,17 @@ class PostgreConnection
     private $postgreStruct;
     public function __construct()
     {
-        $this->dbname = 'php_login';
+        $this->dbname = getenv("POSTGRES_DB");
         $this->connection = $this->create_connection();
         $this->postgreStruct = new SentencesStruct();
         $this->initializeTables();
     }
     private function create_connection()
     {
-        $host = 'dpg-cucsdm1u0jms73cd4bb0-a';
-        $username = 'php_login_user';
-        $password = 'DmRzJUwUgP78zLkUPDiWVHhqnO1Puybn';
-        $port=5432;
+        $host = getenv("POSTGRES_HOST");
+        $username = getenv("POSTGRES_USER");
+        $password = getenv("POSTGRES_PASSWORD");
+        $port=getenv("POSTGRES_PORT");
         try {
             $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
             $sqlExisteDB = "SELECT 1 FROM pg_database WHERE datname = :dbname";
