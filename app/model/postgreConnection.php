@@ -18,17 +18,19 @@ class PostgreConnection
         $username = getenv("POSTGRES_USER");
         $password = getenv("POSTGRES_PASSWORD");
         $port=getenv("POSTGRES_PORT");
+        $dbPath=  dirname(__DIR__).'/db/sqliteDB.sqlite';
         try {
-            $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
-            $sqlExisteDB = "SELECT 1 FROM pg_database WHERE datname = :dbname";
-            $sqlPrepare = $connection->prepare($sqlExisteDB);
-            $sqlPrepare->execute([':dbname' => 'php_login']);
-            if (!$sqlPrepare->fetch()) {
-                $sqlCrearDB = "CREATE DATABASE " . $this->dbname;
-                $connection->exec($sqlCrearDB);
-            }
-            $connection = new PDO("pgsql:host=$host;dbname=" . $this->dbname . ";", $username, $password);
-
+            // $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
+            $connection = new SQLite3($dbPath);
+            // $sqlExisteDB = "SELECT 1 FROM pg_database WHERE datname = :dbname";
+            // $sqlPrepare = $connection->prepare($sqlExisteDB);
+            // $sqlPrepare->execute([':dbname' => 'php_login']);
+            // if (!$sqlPrepare->fetch()) {
+            //     $sqlCrearDB = "CREATE DATABASE " . $this->dbname;
+            //     $connection->exec($sqlCrearDB);
+            // }
+            // $connection = new PDO("pgsql:host=$host;dbname=" . $this->dbname . ";", $username, $password);
+            echo $dbPath;
             return $connection;
         } catch (PDOException $error) {
             echo '<script>console.log(`No se pudo conectar por: ' . $error . '`)</script>';
