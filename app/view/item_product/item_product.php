@@ -244,8 +244,8 @@ imageSelector.addEventListener('change', function() {
 function handleCreateSubmit(e) {
     e.preventDefault()
     const name = e.target.name.value
-    const price = e.target.price.value
-    const amount = e.target.price.amount
+    const price = parseFloat(e.target.price.value)
+    const amount = parseInt(e.target.amount.value)
     const img_rute = e.target.img_rute.value.split('-')[1]
 
     if (name == " " || price == " " || img_rute == " " || amount == " ") {
@@ -259,7 +259,6 @@ function handleCreateSubmit(e) {
         amount,
         img_rute,
     }
-
     const form = document.createElement('form');
     form.action = '';
     form.method = 'post';

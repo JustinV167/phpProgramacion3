@@ -38,7 +38,21 @@ class LoginController{
         $_SESSION['signIn']=true;
         $_SESSION['exp']=new DateTime();
         $_SESSION['exp']->modify('+4 hours');
-        header('Location: http://'.$_SERVER['HTTP_HOST']);
+        if($userData['rol']=="admin"){
+            $minProduct=$this->dbConnection->productsMin();
+            if(count($minProduct->data)>0){
+                $string="";
+                foreach ($minProduct->data as $key => $value) {
+                    if($key==0){
+                        $string=$value["name"];
+                    }else{
+                        $string=$string.', '.$value["name"];
+                    }
+                }
+                echo "<script> alert('los siguiente productos se quedaron o estan a punto de quedarse sin stock: $string')</script>";
+            }
+        }
+        header('Location: https://'.$_SERVER['HTTP_HOST']);
         return;
     }
     public function validateData($data)

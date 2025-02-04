@@ -270,17 +270,17 @@ class PostgreConnection
     public function createProduct($data){
         try {
             $countPrepare = $this->connection->prepare('select count(*) from products where name=? AND status!="inactive";');
-            $countPrepare->bindValue(2, $data->name);
+            $countPrepare->bindValue(1, $data->name);
             $countResult=$countPrepare->execute();
             $count = $countResult->fetchArray();
             if ($count[0] >= 1) {
                 return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
             }
-            $keys=[$data->name, $data->img_rute,$data->price,$data->amount, $data->id_category];//recuerda el orden
-            $sqlPrepare = $this->connection->prepare($this->postgreStruct->createCategory);
+            $keys=[$data->id_category,$data->img_rute,$data->price,$data->amount, $data->name,];//recuerda el orden
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->createProducts);
             foreach ($keys as $key => $value) {
                 $sqlPrepare->bindValue($key+1, $value);
-            }
+            };
             $result=$sqlPrepare->execute();
             if ($result) {
                 return (object) ['code' => 200, 'message' => 'categoria creado con exito'];
@@ -308,6 +308,19 @@ class PostgreConnection
             echo '<script>console.log(`Error: ' . $error . '`)</script>';
             return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', ];
         }
+    }
+    public function productsMin(){
+        try {
+                $result=$this->prepareQuery($this->postgreStruct->productsMin,[]);
+                if ($result) {
+                    return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result];
+                } else {
+                    return (object) ['code' => 404, 'message' => 'Categorias no encontradas', 'data' => []];
+                }
+            } catch (PDOException $error) {
+                echo '<script>console.log(`Error: ' . $error . '`)</script>';
+                return (object) ['code' => 500, 'message' => 'Error al buscar Categorias','data' => [] ];
+            }
     }
     public function deleteProducts($id){
         try {
