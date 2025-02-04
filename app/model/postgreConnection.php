@@ -53,13 +53,15 @@ class PostgreConnection
 
             $this->connection->exec($this->postgreStruct->usersTable);
             $countPrepare = $this->connection->prepare('select count(*) from users where email=?;');
-            $countPrepare->execute([$data->email]);
-            $count = $countPrepare->fetch();
+            $countPrepare->bindValue(1, $data->email,SQLITE3_TEXT);
+            $countResult=$countPrepare->execute();
+            $count = $countResult->fetchArray();
             if ($count[0] >= 1) {
                 return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
             }
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->usersCreate);
-            $result = $sqlPrepare->execute([$data->name, $data->lastname, $data->email, $data->password, 'active', 'user']);
+            $this->prepareVar($sqlPrepare,[$data->name, $data->lastname, $data->email, $data->password, 'active', 'user']);
+            $result = $sqlPrepare->execute();
             if ($result) {
                 return (object) ['code' => 200, 'message' => 'Usuario creado con exito'];
             } else {
@@ -80,10 +82,11 @@ class PostgreConnection
         try {
             $this->connection->exec($this->postgreStruct->usersTable);
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->userQuery);
-            $sqlPrepare->execute([$email]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $email,SQLITE3_TEXT);
+            $prepareResult=$sqlPrepare->execute();
+            $result = $prepareResult->fetchArray();
             if (count($result) > 0) {
-                return (object) ['code' => 200, 'message' => 'Usuario obtenido con exito', 'data' => $result[0]];
+                return (object) ['code' => 200, 'message' => 'Usuario obtenido con exito', 'data' => $result];
             } else {
                 return (object) ['code' => 404, 'message' => 'Usuario no encontrado'];
             }
@@ -97,8 +100,8 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->allCategoryQuery);
-            $sqlPrepare->execute();
-            $result = $sqlPrepare->fetchAll();
+            $prepareResult=$sqlPrepare->execute();
+            $result = $prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result];
             } else {
@@ -114,8 +117,9 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->categoryQuery);
-            $sqlPrepare->execute([$name]);
-            $result = $sqlPrepare->fetchAll();
+            $this->prepareVar($sqlPrepare,[$name]);
+            $sqlPrepare->execute();
+            $result = $sqlPrepare->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result];
             } else {
@@ -130,8 +134,9 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->categoryId);
-            $sqlPrepare->execute([$id]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $id,SQLITE3_TEXT);
+            $prepareResult=$sqlPrepare->execute();
+            $result = $prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result[0]];
             } else {
@@ -147,8 +152,9 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->allProductsQuery);
-            $sqlPrepare->execute([$category]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $category,SQLITE3_TEXT);
+            $prepareResult=$sqlPrepare->execute();
+            $result = $prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result];
             } else {
@@ -164,8 +170,10 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->productsQuery);
-            $sqlPrepare->execute([$category,$name]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $category,SQLITE3_TEXT);
+            $sqlPrepare->bindValue(1, $name,SQLITE3_TEXT);
+            $prepareResult=$sqlPrepare->execute();
+            $result = $prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', 'data' => $result];
             } else {
@@ -180,8 +188,9 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->modifyAmount);
-            $sqlPrepare->execute([$amount,$id]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $amount,SQLITE3_TEXT);
+            $sqlPrepare->bindValue(2, $id,SQLITE3_TEXT);
+            $result=$sqlPrepare->execute();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
             } else {
@@ -196,8 +205,9 @@ class PostgreConnection
     {
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->modifyMoney);
-            $sqlPrepare->execute([$amount,$email]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $amount,SQLITE3_TEXT);
+            $sqlPrepare->bindValue(2, $email,SQLITE3_TEXT);
+            $result=$sqlPrepare->execute();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
             } else {
@@ -211,8 +221,10 @@ class PostgreConnection
     public function userMoney($email){
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->userMoney);
-            $sqlPrepare->execute([$email]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $amount,SQLITE3_TEXT);
+            $sqlPrepare->bindValue(2, $id,SQLITE3_TEXT);
+            $prepareResult=$sqlPrepare->execute();
+            $result=$prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito',  'data' => $result];
             } else {
@@ -225,8 +237,9 @@ class PostgreConnection
     }public function productAmount($id){
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->productAmount);
-            $sqlPrepare->execute([$id]);
-            $result = $sqlPrepare->fetchAll();
+            $sqlPrepare->bindValue(1, $id,SQLITE3_INT);
+            $prepareResult=$sqlPrepare->execute();
+            $result=$prepareResult->fetchArray();
             if (count($result) > 0) {
                 return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito',  'data' => $result];
             } else {
@@ -244,6 +257,12 @@ class PostgreConnection
             $this->connection->exec($this->postgreStruct->$value);
         }
 
+    }
+    private function prepareVar($sqlPrepare,$keys){
+        foreach ($keys as $key => $value) {
+            $sqlPrepare->bindValue($key+1, $value,SQLITE3_TEXT);
+        }
+        return $sqlPrepare;
     }
 
 }
