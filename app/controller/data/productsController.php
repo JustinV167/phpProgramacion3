@@ -7,16 +7,22 @@ class ProductsDataController
     private $dbConnection;
     public $errorArr = [];
     public $productsSubmit;
+    public $item_product;
+
     public $searchProducts='';
     public $category;
     public function __construct()
     {
         
         $this->dbConnection = new PostgreConnection();
-        $this->productsSubmit = $this->obteinData();
         $url = explode('/', URL);
         $parsedUrl = parse_url($url[3]);
         $item_product = $parsedUrl['path'];
+        $this->item_product=$item_product;
+        $this->productsSubmit = $this->obteinData();
+        $this->deleteProduct();
+        $this->createProduct();
+
 
         $categoryQuery=$this->dbConnection->get_category_id($item_product);
         if(!property_exists($categoryQuery,'data')){
@@ -81,6 +87,38 @@ class ProductsDataController
             $_SESSION['user']->money=$onlyMoney->data[0]['money'];
         };
         return  $searchObj;
+    }
+    public function deleteProduct(){
+         if (!isset($_POST["deleteProduct"])) {
+           return;
+        }
+        $productData= (object) [
+            "idProduct" => $_POST["idProduct"],
+        ];
+        if($_SESSION["user"]->rol!="admin"){
+            return;
+        }   
+        $this->dbConnection->deleteProducts($productData->idProduct);
+    }
+    private function createProduct(){
+        if (!isset($_POST["createProduct"])) {
+           return;
+        }
+        $categoryData= (object) [
+            "product_price" => $_POST["price"],
+            "product_amount" => $_POST["amount"],
+            "product_name" => $_POST["name"],
+            "product_img_rute" => $_POST["img_rute"],
+        ];
+        
+        $createProduct=$this->dbConnection->createProduct((object)[
+            "price"=>$categoryData->product_price,
+            "name"=>$categoryData->product_name,
+            "img_rute"=>$categoryData->product_img_rute,
+            "id_category"=>$this->item_product,
+            "amount"=>$categoryData->product_amount,
+        ]);
+        
     }
 }
 ?>

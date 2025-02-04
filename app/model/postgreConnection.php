@@ -241,17 +241,14 @@ class PostgreConnection
 
     public function createCategory($data){
         try {
-            $this->connection->exec($this->postgreStruct->usersTable);
-            $countPrepare = $this->connection->prepare('select count(*) from categorys where (id=? OR name=?) AND status!="inactive";');
+            $countPrepare = $this->connection->prepare('select count(*) from categorys where id=?  AND status!="inactive";');
             $countPrepare->bindValue(1, $data->code,SQLITE3_TEXT);
-            $countPrepare->bindValue(2, $data->name,SQLITE3_TEXT);
             $countResult=$countPrepare->execute();
             $count = $countResult->fetchArray();
             if ($count[0] >= 1) {
                 return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
             }
             $keys=[$data->code, $data->img_rute,$data->name, ];
-            var_dump($keys);
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->createCategory);
             foreach ($keys as $key => $value) {
                 $sqlPrepare->bindValue($key+1, $value);
@@ -269,9 +266,52 @@ class PostgreConnection
             return (object) ['code' => 500, 'message' => 'Error al crear categoria'];
         }
     }
-    public function deleteCategory($id){
+    
+    public function createProduct($data){
+        try {
+            $countPrepare = $this->connection->prepare('select count(*) from products where name=? AND status!="inactive";');
+            $countPrepare->bindValue(2, $data->name);
+            $countResult=$countPrepare->execute();
+            $count = $countResult->fetchArray();
+            if ($count[0] >= 1) {
+                return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
+            }
+            $keys=[$data->name, $data->img_rute,$data->price,$data->amount, $data->id_category];//recuerda el orden
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->createCategory);
+            foreach ($keys as $key => $value) {
+                $sqlPrepare->bindValue($key+1, $value);
+            }
+            $result=$sqlPrepare->execute();
+            if ($result) {
+                return (object) ['code' => 200, 'message' => 'categoria creado con exito'];
+            } else {
+                return (object) ['code' => 500, 'message' => 'No se pudo crear al categoria'];
+
+            }
+
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al crear categoria'];
+        }
+    }
+     public function deleteCategory($id){
         try {
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->deleteCategory);
+            $sqlPrepare->bindValue(1, $id,SQLITE3_TEXT);
+            $result=$sqlPrepare->execute();
+            if ($result) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', ];
+        }
+    }
+    public function deleteProducts($id){
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->deleteProducts);
             $sqlPrepare->bindValue(1, $id,SQLITE3_TEXT);
             $result=$sqlPrepare->execute();
             if ($result) {

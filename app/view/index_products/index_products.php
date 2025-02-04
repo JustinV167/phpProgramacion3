@@ -208,9 +208,7 @@ function handleSubmit(e) {
     document.body.appendChild(form);
     form.submit()
 }
+</script>
+</body>
 
-<
-/body>
-
-<
-/html>
+</html>
