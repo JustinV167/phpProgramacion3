@@ -4,7 +4,55 @@ include_once(__DIR__."/../template/header.php");
     <div class="flex w-full my-4 text-3xl justify-center">
         <p class> Categorias</p>
     </div>
-    <form  class="flex w-full my-4 px-10 ">
+    <?php if ($_SESSION['user']->rol=="admin"): ?>
+    <button id="openModalButton" class="bg-blue-500 text-white mx-6 sm:mx-10 px-4  h-7 rounded-lg hover:bg-blue-700">
+        Crear Categoria
+    </button>
+    <div id="modal" class="fixed z-10 inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
+        <form onsubmit="return handleSubmit(event);" class="bg-white p-8 rounded-lg w-96 flex justify-center flex-col items-center">
+            <h2 class="text-xl font-bold mb-4">Crear Categoria</h2>
+            <div>
+
+                <p class="text-gray-600"><strong>Nombre:</strong></p>
+                <input name="name" required class="border border-gray-600 rounded-lg h-7" >
+            </div>
+            <div>
+
+<p class="text-gray-600"><strong>Codigo:</strong></p>
+<input class="border border-gray-600 rounded-lg h-7" required name="code" >
+</div>
+<div>
+
+<p class="text-gray-600"><strong>Imagen:</strong></p>
+<select  id="imageSelector" required name="img_rute"class="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="" disabled selected>Selecciona una imagen</option>
+            <?php
+            $imageArray = [
+                'img/imagen.jpg-1',
+            ];
+            foreach ($imageArray as $image) {
+                echo '<option value="' .$image . '">' . basename($image) . '</option>';
+            }
+            ?>
+        </select>
+        <div class="justify-center flex rounded-md mt-2">
+            <div id="imagePreview" class="w-32 h-32 bg-gray-300 flex items-center justify-center rounded-md">
+                <span class="text-gray-500 text-xs">Selecciona una imagen para verla aquí.</span>
+            </div>
+        </div>
+</div>
+            <div class="flex gap-4">
+                <button type="button" id="closeModalButton" class="px-1 h-8 bg-red-500 text-white my-2  rounded-lg hover:bg-red-700">
+                    Volver
+                </button>
+                <button name="createCategory" id="closeModalButton" class="px-1 h-8 bg-green-500 text-white my-2 rounded-lg hover:bg-green-700">
+                    Crear
+                </button>
+            </div>
+    </form>
+    </div>
+    <?php endif; ?>
+    <form  class="flex w-full my-4 px-6 sm:px-10  ">
         <input value="<?php echo $categoryController->searchCategory?>" name="searchCategory" type="text" placeholder="Buscar categoria" class="border rounded-lg border-gray-700 px-1">
         <button class="h-7 w-7 hover:bg-blue-500 flex justify-center items-center bg-blue-400 rounded-lg mx-1">
             <img  src="<?php echo Router::$__public ?>icons/search.svg">
@@ -32,6 +80,71 @@ include_once(__DIR__."/../template/header.php");
         
         <?php }} ?>
     </div>
-</body>
+   
+    <script>
+        const openModalButton = document.getElementById('openModalButton');
+        const modal = document.getElementById('modal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        openModalButton.addEventListener('click', function() {
+            modal.classList.remove('hidden');
+        });
 
+        closeModalButton.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+    <script>
+        const imageSelector = document.getElementById('imageSelector');
+        const imagePreview = document.getElementById('imagePreview');
+        imageSelector.addEventListener('change', function() {
+            const selectedImageUrl = imageSelector.value.split('-')[0];
+            if (selectedImageUrl) {
+                imagePreview.innerHTML = '';
+                const img = new Image();
+                img.src = '<?php echo Router::$__public ?>'+ selectedImageUrl;
+                img.classList.add('w-full', 'h-full', 'object-cover', 'rounded-md');
+                imagePreview.appendChild(img);
+            }
+        });
+    </script>
+    <script>
+        function handleSubmit(e){
+            e.preventDefault()
+            const category_name = e.target.name.value
+            const category_code = e.target.code.value
+            const category_img_rute = e.target.img_rute.value.split('-')[1]
+            
+            if (category_name == " " || category_code==" " ) {
+                alert('No se ingreso nombre o codigo')
+                return
+            }
+            const dataForm = { 
+                createCategory:false,
+                category_name,category_code,category_img_rute
+                }
+          
+            const form = document.createElement('form');
+            form.action = '';
+            form.method = 'post';
+            form.style.display = 'none'; 
+            for (const key in dataForm) {
+                if (dataForm.hasOwnProperty(key)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = dataForm[key];
+                    form.appendChild(input);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit()
+        }
+    </script>
+</body>
 </html>

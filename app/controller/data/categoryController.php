@@ -11,6 +11,7 @@ class CategoryDataController
     public function __construct()
     {
         $this->dbConnection = new PostgreConnection();
+        $this->createCategory();
         $this->categorySubmit = $this->obteinData();
         $this->searchCategory=isset($this->categorySubmit->searchCategory) ? $this->categorySubmit->searchCategory : '';
     }
@@ -41,6 +42,27 @@ class CategoryDataController
         }
         ;
         return (object) [];
+    }
+    private function createCategory(){
+        if (!isset($_POST["createCategory"])) {
+           return;
+        }
+        $categoryData= (object) [
+            "category_code" => $_POST["category_code"],
+            "category_name" => $_POST["category_name"],
+            "category_img_rute" => $_POST["category_img_rute"],
+        ];
+        $categoryQuery=$this->dbConnection->get_category_id($categoryData->category_code);
+        if($categoryQuery->code!=404){
+            echo "<script>alert('El codigo de esta categoria ya existe')</script>";
+            return;
+        }
+        $createCategory=$this->dbConnection->createCategory((object)[
+            "code"=>$categoryData->category_code,
+            "name"=>$categoryData->category_name,
+            "img_rute"=>$categoryData->category_img_rute,
+
+        ]);
     }
 }
 ?>

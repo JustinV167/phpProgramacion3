@@ -59,9 +59,12 @@ class PostgreConnection
             if ($count[0] >= 1) {
                 return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
             }
+            $keys=[$data->name, $data->lastname, $data->email, $data->password, 'active', 'user'];
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->usersCreate);
-            $this->prepareVar($sqlPrepare,[$data->name, $data->lastname, $data->email, $data->password, 'active', 'user']);
-            $result = $sqlPrepare->execute();
+            foreach ($keys as $key => $value) {
+                $sqlPrepare->bindValue($key+1, $value);
+            }
+            $result=$sqlPrepare->execute();
             if ($result) {
                 return (object) ['code' => 200, 'message' => 'Usuario creado con exito'];
             } else {
@@ -233,6 +236,27 @@ class PostgreConnection
         } catch (PDOException $error) {
             echo '<script>console.log(`Error: ' . $error . '`)</script>';
             return (object) ['code' => 500, 'message' => 'Error al buscar Categorias',  'data' => []];
+        }
+    }
+
+    public function createCategory($data){
+        try {
+            $keys=[$data->code, $data->img_rute,$data->name, ];
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->createCategory);
+            foreach ($keys as $key => $value) {
+                $sqlPrepare->bindValue($key+1, $value);
+            }
+            $result=$sqlPrepare->execute();
+            if ($result) {
+                return (object) ['code' => 200, 'message' => 'categoria creado con exito'];
+            } else {
+                return (object) ['code' => 500, 'message' => 'No se pudo crear al categoria'];
+
+            }
+
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al crear categoria'];
         }
     }
     private function initializeTables()

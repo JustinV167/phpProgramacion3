@@ -19,6 +19,7 @@ class SentencesStruct
    public $allCategoryQuery = "SELECT *,(SELECT i.rute FROM img_rute as i where i.id=c.id_img) as img_rute , (SELECT COUNT(*) FROM products  as p WHERE  p.id_category=c.id AND p.status!='inactive' )as n_products  FROM categorys as c WHERE c.status!='inactive'; ";
    public $categoryQuery = "SELECT *,(SELECT i.rute  FROM img_rute as i where i.id=c.id_img) as img_rute, (SELECT COUNT(*) FROM products  as p WHERE  p.id_category=c.id AND p.status!='inactive')as n_products  FROM categorys as c WHERE c.status!='inactive' AND c.name LIKE '%' || ? || '%';";
    public $categoryId = "SELECT *  FROM categorys  as c WHERE  c.status!='inactive' AND c.id=?";
+   public $createCategory = "INSERT INTO categorys (id,id_img,name,status,description) VALUES(?,?,?,'active',' ');";
    //products
    public $productsTable = "CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY  AUTOINCREMENT,id_img INT,id_category VARCHAR(20), name VARCHAR(20) UNIQUE, description VARCHAR(60),status VARCHAR(20),price FLOAT,amount INT,id_currency INT);
    INSERT INTO products (id_img, id_category , name ,status ,price ,amount, id_currency,description) VALUES (1, 'clothes' , 'papel' ,'active' ,10 ,5, 1,'hojas de papel')  ON CONFLICT (name) DO NOTHING;";
