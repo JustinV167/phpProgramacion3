@@ -10,7 +10,7 @@ $category=new CategoryDataController();
     <input type="checkbox" id="menu__check" style="display:none;" />
     <div class="menu__lateral">
         <ul>
-            <li><a href="">Inicio</a></li>
+        <a href="<?php echo Router::$__root ?>"><li>Inicio</li></a>
             <?php if (isset($_SESSION['signIn'])): ?>
                 <label for="menu__catalogo__check">
                     <li>Categorias </li>
@@ -29,10 +29,10 @@ $category=new CategoryDataController();
                 </ul>
             <?php else: ?>
 
-                <li><a href="">Iniciar Sesion</a></li>
-                <li><a href="">Registrarse</a></li>
+                <a href="<?php echo Router::$__root ?>home/login"><li>Iniciar Sesion</li></a>
+                <a href="<?php echo Router::$__root ?>home/register"><li>Registrarse</li></a>
             <?php endif ?>
-            <li><a href="">Nosotros</a></li>
+            <a href="<?php echo Router::$__root ?>home/about"> <li>Nosotros</li></a>
 
         </ul>
     </div>
@@ -95,7 +95,7 @@ $category=new CategoryDataController();
 </div>
 <div class="nav__bar__template"></div>
 <?php if (isset($_SESSION['signIn'])): ?>
-        <div class="fixed top-2 right-2 ">
+        <div class="fixed top-2 right-2 z-index ">
         <div class="nav__bar__template"></div>  
         <div class="p-1 bg-white border border-blue-600 rounded-lg ">
             Tu dinero: <?php echo $_SESSION['user']->money ?> bs
