@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_pgsql
 
 COPY . /var/www/html
-RUN chown -R www-data:www-data /var/www/html/app/db/sqliteDB.sqlite
-RUN chmod 777 /var/www/html/app/db/sqliteDB.sqlite
+RUN sudo chown -R /var/www/html/app/db/*
+RUN sudo chmod 7777 /var/www/html/app/db/*
 
 WORKDIR /var/www/html
+WORKDIR /var/www/html/app/db
+
 CMD ["apache2-foreground"]
