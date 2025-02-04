@@ -12,6 +12,8 @@ class CategoryDataController
     {
         $this->dbConnection = new PostgreConnection();
         $this->createCategory();
+        $this->deleteCategory();
+
         $this->categorySubmit = $this->obteinData();
         $this->searchCategory=isset($this->categorySubmit->searchCategory) ? $this->categorySubmit->searchCategory : '';
     }
@@ -52,17 +54,28 @@ class CategoryDataController
             "category_name" => $_POST["category_name"],
             "category_img_rute" => $_POST["category_img_rute"],
         ];
-        $categoryQuery=$this->dbConnection->get_category_id($categoryData->category_code);
-        if($categoryQuery->code!=404){
-            echo "<script>alert('El codigo de esta categoria ya existe')</script>";
-            return;
-        }
+        
         $createCategory=$this->dbConnection->createCategory((object)[
             "code"=>$categoryData->category_code,
             "name"=>$categoryData->category_name,
             "img_rute"=>$categoryData->category_img_rute,
-
+            
         ]);
+        
+    }
+
+    private function deleteCategory(){
+        if (!isset($_POST["deleteCategory"])) {
+           return;
+        }
+        $categoryData= (object) [
+            "idCategory" => $_POST["idCategory"],
+        ];
+        if($_SESSION["user"]->rol!="admin"){
+            return;
+        }   
+        $this->dbConnection->deleteCategory($categoryData->idCategory);
+        
     }
 }
 ?>

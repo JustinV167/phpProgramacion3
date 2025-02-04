@@ -14,11 +14,11 @@ class PostgreConnection
     }
     private function create_connection()
     {
-        $host = getenv("POSTGRES_HOST");
-        $username = getenv("POSTGRES_USER");
-        $password = getenv("POSTGRES_PASSWORD");
-        $port=getenv("POSTGRES_PORT");
-        $dbPath=  dirname(dirname(__DIR__)).'/db/sqliteDB.sqlite';
+        // $host = getenv("POSTGRES_HOST");
+        // $username = getenv("POSTGRES_USER");
+        // $password = getenv("POSTGRES_PASSWORD");
+        // $port=getenv("POSTGRES_PORT");
+        $dbPath=  dirname(__DIR__).'/db/sqliteDB.sqlite';
         try {
             // $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
             $connection = new SQLite3($dbPath);
@@ -241,7 +241,17 @@ class PostgreConnection
 
     public function createCategory($data){
         try {
+            $this->connection->exec($this->postgreStruct->usersTable);
+            $countPrepare = $this->connection->prepare('select count(*) from categorys where (id=? OR name=?) AND status!="inactive";');
+            $countPrepare->bindValue(1, $data->code,SQLITE3_TEXT);
+            $countPrepare->bindValue(2, $data->name,SQLITE3_TEXT);
+            $countResult=$countPrepare->execute();
+            $count = $countResult->fetchArray();
+            if ($count[0] >= 1) {
+                return (object) ['code' => 400, 'message' => 'Este Correo ya existe'];
+            }
             $keys=[$data->code, $data->img_rute,$data->name, ];
+            var_dump($keys);
             $sqlPrepare = $this->connection->prepare($this->postgreStruct->createCategory);
             foreach ($keys as $key => $value) {
                 $sqlPrepare->bindValue($key+1, $value);
@@ -257,6 +267,21 @@ class PostgreConnection
         } catch (PDOException $error) {
             echo '<script>console.log(`Error: ' . $error . '`)</script>';
             return (object) ['code' => 500, 'message' => 'Error al crear categoria'];
+        }
+    }
+    public function deleteCategory($id){
+        try {
+            $sqlPrepare = $this->connection->prepare($this->postgreStruct->deleteCategory);
+            $sqlPrepare->bindValue(1, $id,SQLITE3_TEXT);
+            $result=$sqlPrepare->execute();
+            if ($result) {
+                return (object) ['code' => 200, 'message' => 'Categorias obtenidas con exito', ];
+            } else {
+                return (object) ['code' => 404, 'message' => 'Categorias no encontradas', ];
+            }
+        } catch (PDOException $error) {
+            echo '<script>console.log(`Error: ' . $error . '`)</script>';
+            return (object) ['code' => 500, 'message' => 'Error al buscar Categorias', ];
         }
     }
     private function initializeTables()

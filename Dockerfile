@@ -1,5 +1,5 @@
 FROM php:8.0.30-apache
-VOLUME ["/var/www/html/db"]
+VOLUME ["/var/www/html/app/db"]
 
 # Habilitar mod_rewrite
 RUN a2enmod rewrite
@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 COPY . /var/www/html
 
 # Configurar permisos
-RUN chown -R www-data:www-data /var/www/html/db \
-    && chmod -R 775 /var/www/html/db
+RUN chown -R www-data:www-data /var/www/html/app/db \
+    && chmod -R 777 /var/www/html/app/db
 
 WORKDIR /var/www/html
 CMD ["apache2-foreground"]
