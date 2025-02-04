@@ -5,6 +5,7 @@
     } else {
         $ruta = 'http';
     }
+    echo $ruta;
     define('folderPath',$ruta.'://'.$_SERVER['HTTP_HOST']);
     $urlPath=$ruta.'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     $url=substr($urlPath,strlen(folderPath));
