@@ -30,7 +30,6 @@ class PostgreConnection
             //     $connection->exec($sqlCrearDB);
             // }
             // $connection = new PDO("pgsql:host=$host;dbname=" . $this->dbname . ";", $username, $password);
-            echo $dbPath;
             return $connection;
         } catch (PDOException $error) {
             echo '<script>console.log(`No se pudo conectar por: ' . $error . '`)</script>';
