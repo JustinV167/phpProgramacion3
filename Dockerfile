@@ -9,5 +9,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_pgsql
 
 COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html/app/db/sqliteDB.sqlite
 WORKDIR /var/www/html
 CMD ["apache2-foreground"]
