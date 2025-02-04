@@ -18,7 +18,7 @@ class PostgreConnection
         $username = getenv("POSTGRES_USER");
         $password = getenv("POSTGRES_PASSWORD");
         $port=getenv("POSTGRES_PORT");
-        $dbPath=  dirname(__DIR__).'/db/sqliteDB.sqlite';
+        $dbPath=  dirname(dirname(__DIR__)).'/db/sqliteDB.sqlite';
         try {
             // $connection = new PDO("pgsql:host=$host;port=$port", $username, $password);
             $connection = new SQLite3($dbPath);
