@@ -52,12 +52,12 @@ class LoginController{
                 }
                 echo "<script> alert('los siguiente productos se quedaron o estan a punto de quedarse sin stock: $string');window.location.href = 'http://" . $_SERVER['HTTP_HOST'] . "';</script>";
             }else{
-        header('Location: http://'.$_SERVER['HTTP_HOST']);
+        header('Location: https://'.$_SERVER['HTTP_HOST']);
 
                 return;
             }
         }
-        header('Location: http://'.$_SERVER['HTTP_HOST']);
+        header('Location: https://'.$_SERVER['HTTP_HOST']);
         return;
     }
     public function validateData($data)
