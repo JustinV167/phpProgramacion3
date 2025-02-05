@@ -33,6 +33,11 @@ include_once(__DIR__ . "/../template/header.php");
                 <?php
                     $imageArray = [
                         'img/imagen.jpg-1',
+                        'img/clothes.jpg-2',
+                        'img/electrodom.jpeg-3',
+                        'img/harinas.jpeg-4',
+                        'img/meats.jpeg-5',
+                        'img/router.jpeg-6',
                     ];
                     foreach ($imageArray as $image) {
                         echo '<option value="' . $image . '">' . basename($image) . '</option>';

@@ -38,6 +38,7 @@ class LoginController{
         $_SESSION['signIn']=true;
         $_SESSION['exp']=new DateTime();
         $_SESSION['exp']->modify('+4 hours');
+
         if($userData['rol']=="admin"){
             $minProduct=$this->dbConnection->productsMin();
             if(count($minProduct->data)>0){
@@ -49,10 +50,14 @@ class LoginController{
                         $string=$string.', '.$value["name"];
                     }
                 }
-                echo "<script> alert('los siguiente productos se quedaron o estan a punto de quedarse sin stock: $string')</script>";
+                echo "<script> alert('los siguiente productos se quedaron o estan a punto de quedarse sin stock: $string');window.location.href = 'http://" . $_SERVER['HTTP_HOST'] . "';</script>";
+            }else{
+        header('Location: http://'.$_SERVER['HTTP_HOST']);
+
+                return;
             }
         }
-        header('Location: https://'.$_SERVER['HTTP_HOST']);
+        header('Location: http://'.$_SERVER['HTTP_HOST']);
         return;
     }
     public function validateData($data)

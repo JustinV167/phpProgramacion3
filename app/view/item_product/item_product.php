@@ -22,11 +22,11 @@ include_once(__DIR__."/../template/header.php");
         <div>
 
             <p class="text-gray-600"><strong>Precio:</strong></p>
-            <input class="border border-gray-600 rounded-lg h-7" required name="price">
+            <input oninput='numberAndPositive(this)' type="number" class="border border-gray-600 rounded-lg h-7" required name="price">
         </div>
         <div>
             <p class="text-gray-600"><strong>cantidad:</strong></p>
-            <input class="border border-gray-600 rounded-lg h-7" required name="amount">
+            <input oninput='numberAndPositive(this)' type="number" class="border border-gray-600 rounded-lg h-7" required name="amount">
         </div>
         <div>
 
@@ -37,6 +37,11 @@ include_once(__DIR__."/../template/header.php");
                 <?php
                     $imageArray = [
                         'img/imagen.jpg-1',
+                        'img/clothes.jpg-2',
+                        'img/electrodom.jpeg-3',
+                        'img/harinas.jpeg-4',
+                        'img/meats.jpeg-5',
+                        'img/router.jpeg-6',
                     ];
                     foreach ($imageArray as $image) {
                         echo '<option value="' . $image . '">' . basename($image) . '</option>';
@@ -189,6 +194,12 @@ function handleSubmit(e) {
 }
 </script>
 <script>
+    function numberAndPositive(event){
+        const value=parseInt(event.value)
+        if(value<0 || isNaN(value) )   {
+            event.value=0
+        }
+    }
 function deleteProduct() {
     const modal = document.getElementById("modalDelete");
     const idProduct = modal.getAttribute("data-id")
